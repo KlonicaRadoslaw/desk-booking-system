@@ -1,0 +1,65 @@
+﻿using api.Data;
+using api.Dtos.Desk;
+using api.Interfaces;
+using api.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace api.Repositories
+{
+    public class DeskRepository : IDeskRepository
+    {
+        private readonly ApplicationDbContext _context;
+        public DeskRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<Desk> CreateAsync(Desk deskModel)
+        {
+            await _context.Desks.AddAsync(deskModel);
+            await _context.SaveChangesAsync();
+            return deskModel;
+        }
+
+        public async Task<Desk?> DeleteAsync(int id)
+        {
+            var deskModel = _context.Desks.FirstOrDefault(x => x.Id == id);
+            if (deskModel == null)
+                return null;
+
+            _context.Desks.Remove(deskModel);
+            await _context.SaveChangesAsync();
+            return deskModel;
+        }
+
+        public async Task<List<Desk>> GetAllAsync()
+        {
+            var locations = await _context
+                .Desks
+                .ToListAsync();
+            return locations;
+        }
+
+        public async Task<Desk?> GetByIdAsync(int id)
+        {
+            return await _context.Desks.FirstOrDefaultAsync(l => l.Id == id);
+        }
+
+        public async Task<Desk?> UpdateAsync(int id, UpdateDeskRequestDto deskModel)
+        {
+            var existingDesk = await _context.Desks.FirstOrDefaultAsync(l => l.Id == id);
+
+            if (existingDesk == null)
+                return null;
+
+            existingDesk.Name = deskModel.Name;
+            existingDesk.LocationId = deskModel.LocationId;
+            existingDesk.IsAvailable = deskModel.IsAvailable;
+
+
+            await _context.SaveChangesAsync();
+
+            return existingDesk;
+        }
+    }
+}

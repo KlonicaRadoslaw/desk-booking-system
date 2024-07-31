@@ -110,6 +110,71 @@ namespace api.Migrations
                     b.HasIndex("LocationId");
 
                     b.ToTable("Desks");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsAvailable = true,
+                            LocationId = 1,
+                            Name = "Desk 1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsAvailable = true,
+                            LocationId = 1,
+                            Name = "Desk 2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsAvailable = false,
+                            LocationId = 1,
+                            Name = "Desk 3"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            IsAvailable = true,
+                            LocationId = 2,
+                            Name = "Desk 4"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            IsAvailable = true,
+                            LocationId = 2,
+                            Name = "Desk 5"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IsAvailable = false,
+                            LocationId = 2,
+                            Name = "Desk 6"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            IsAvailable = true,
+                            LocationId = 3,
+                            Name = "Desk 7"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            IsAvailable = true,
+                            LocationId = 3,
+                            Name = "Desk 8"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            IsAvailable = true,
+                            LocationId = 3,
+                            Name = "Desk 9"
+                        });
                 });
 
             modelBuilder.Entity("api.Models.Location", b =>
@@ -127,6 +192,23 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Locations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Floor 1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Floor 2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Floor 3"
+                        });
                 });
 
             modelBuilder.Entity("api.Models.Reservation", b =>
@@ -180,15 +262,15 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2cd79898-7516-4dfe-89c3-d18f674e5a30",
-                            ConcurrencyStamp = "8332a613-a43c-4984-ac93-2c26d8d27ee0",
+                            Id = "37047047-f575-476a-a6c2-3a6d76fc9a21",
+                            ConcurrencyStamp = "1b8c43b4-210c-47b9-b873-25ad3c533919",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "1d720afd-5a9a-4200-9369-b4d5259bccc0",
-                            ConcurrencyStamp = "2a1ab9df-110e-485d-ae5c-72ac6284149a",
+                            Id = "fcaab8d5-3f06-47fe-a969-aa58d4f2b12f",
+                            ConcurrencyStamp = "28dfd03d-4487-4921-ae62-a5b445ccca52",
                             Name = "User",
                             NormalizedName = "USER"
                         });

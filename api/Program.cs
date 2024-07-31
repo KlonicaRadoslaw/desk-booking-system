@@ -1,6 +1,7 @@
 using api.Data;
 using api.Interfaces;
 using api.Models;
+using api.Repositories;
 using api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -88,6 +89,9 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+builder.Services.AddScoped<IDeskRepository, DeskRepository>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 
 var app = builder.Build();
 

@@ -60,6 +60,24 @@ namespace api.Data
                 },
             };
             modelBuilder.Entity<IdentityRole>().HasData(roles);
+
+            modelBuilder.Entity<Location>().HasData(
+            new Location { Id = 1, Name = "Floor 1" },
+            new Location { Id = 2, Name = "Floor 2" },
+            new Location { Id = 3, Name = "Floor 3" }
+            );
+
+            modelBuilder.Entity<Desk>().HasData(
+               new Desk { Id = 1, LocationId = 1, Name = "Desk 1", IsAvailable = true },
+               new Desk { Id = 2, LocationId = 1, Name = "Desk 2", IsAvailable = true },
+               new Desk { Id = 3, LocationId = 1, Name = "Desk 3", IsAvailable = false },
+               new Desk { Id = 4, LocationId = 2, Name = "Desk 4", IsAvailable = true },
+               new Desk { Id = 5, LocationId = 2, Name = "Desk 5", IsAvailable = true },
+               new Desk { Id = 6, LocationId = 2, Name = "Desk 6", IsAvailable = false },
+               new Desk { Id = 7, LocationId = 3, Name = "Desk 7", IsAvailable = true },
+               new Desk { Id = 8, LocationId = 3, Name = "Desk 8", IsAvailable = true },
+               new Desk { Id = 9, LocationId = 3, Name = "Desk 9", IsAvailable = true }
+           );
         }
     }
 }
