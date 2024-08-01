@@ -5,10 +5,11 @@ namespace api.Interfaces
 {
     public interface IReservationRepository
     {
-        Task<List<Reservation>> GetAllAsync();
-        Task<Reservation?> GetByIdAsync(int id);
-        Task<Reservation> CreateAsync(Reservation reservationModel);
-        Task<Reservation?> UpdateAsync(int id, UpdateReservationRequestDto reservationModel);
-        Task<Reservation?> DeleteAsync(int id);
+        Task<IEnumerable<ReservationDto>> GetAllAsync();
+        Task<ReservationDto> GetByIdAsync(int reservationId);
+        Task<IEnumerable<ReservationDto>> GetByUserIdAsync(string userId);
+        Task CreateAsync(CreateReservationRequestDto reservationDto);
+        Task<bool> UpdateAsync(int reservationId, UpdateReservationRequestDto updateDto);
+        Task<bool> DeleteAsync(int reservationId);
     }
 }

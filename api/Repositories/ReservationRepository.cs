@@ -9,57 +9,125 @@ namespace api.Repositories
     public class ReservationRepository : IReservationRepository
     {
         private readonly ApplicationDbContext _context;
+
         public ReservationRepository(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<Reservation> CreateAsync(Reservation reservationModel)
+        public async Task<IEnumerable<ReservationDto>> GetAllAsync()
         {
-            await _context.Reservations.AddAsync(reservationModel);
-            await _context.SaveChangesAsync();
-            return reservationModel;
-        }
-
-        public async Task<Reservation?> DeleteAsync(int id)
-        {
-            var reservationModel = _context.Reservations.FirstOrDefault(x => x.Id == id);
-            if (reservationModel == null)
-                return null;
-
-            _context.Reservations.Remove(reservationModel);
-            await _context.SaveChangesAsync();
-            return reservationModel;
-        }
-
-        public async Task<List<Reservation>> GetAllAsync()
-        {
-            var reservations = await _context
-                .Reservations
+            return await _context.Reservations
+                .Include(r => r.DeskReservations)
+                    .ThenInclude(dr => dr.Desk)
+                        .ThenInclude(d => d.Location)
+                .Include(r => r.AppUser)
+                .Select(r => new ReservationDto
+                {
+                    Id = r.Id,
+                    UserId = r.AppUserId,
+                    UserName = r.AppUser.UserName,
+                    StartDate = r.StartDate,
+                    EndDate = r.EndDate,
+                    DeskNames = r.DeskReservations.Select(dr => dr.Desk.Name).ToList(),
+                    LocationNames = r.DeskReservations.Select(dr => dr.Desk.Location.Name).Distinct().ToList()
+                })
                 .ToListAsync();
-            return reservations;
         }
 
-        public async Task<Reservation?> GetByIdAsync(int id)
+        public async Task<ReservationDto> GetByIdAsync(int reservationId)
         {
-            return await _context.Reservations.FirstOrDefaultAsync(l => l.Id == id);
+            return await _context.Reservations
+                .Include(r => r.DeskReservations)
+                    .ThenInclude(dr => dr.Desk)
+                        .ThenInclude(d => d.Location)
+                .Include(r => r.AppUser)
+                .Where(r => r.Id == reservationId)
+                .Select(r => new ReservationDto
+                {
+                    Id = r.Id,
+                    UserId = r.AppUserId,
+                    UserName = r.AppUser.UserName,
+                    StartDate = r.StartDate,
+                    EndDate = r.EndDate,
+                    DeskNames = r.DeskReservations.Select(dr => dr.Desk.Name).ToList(),
+                    LocationNames = r.DeskReservations.Select(dr => dr.Desk.Location.Name).Distinct().ToList()
+                })
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<Reservation?> UpdateAsync(int id, UpdateReservationRequestDto reservationModel)
+        public async Task<IEnumerable<ReservationDto>> GetByUserIdAsync(string userId)
         {
-            var existingReservation = await _context.Reservations.FirstOrDefaultAsync(r => r.Id == id);
+            return await _context.Reservations
+                .Include(r => r.DeskReservations)
+                    .ThenInclude(dr => dr.Desk)
+                        .ThenInclude(d => d.Location)
+                .Include(r => r.AppUser)
+                .Where(r => r.AppUserId == userId)
+                .Select(r => new ReservationDto
+                {
+                    Id = r.Id,
+                    UserId = r.AppUserId,
+                    UserName = r.AppUser.UserName,
+                    StartDate = r.StartDate,
+                    EndDate = r.EndDate,
+                    DeskNames = r.DeskReservations.Select(dr => dr.Desk.Name).ToList(),
+                    LocationNames = r.DeskReservations.Select(dr => dr.Desk.Location.Name).Distinct().ToList()
+                })
+                .ToListAsync();
+        }
 
-            if (existingReservation == null)
-                return null;
+        public async Task CreateAsync(CreateReservationRequestDto reservationDto)
+        {
+            var reservation = new Reservation
+            {
+                AppUserId = reservationDto.UserId,
+                StartDate = reservationDto.StartDate,
+                EndDate = reservationDto.EndDate,
+                DeskReservations = reservationDto.DeskIds.Select(deskId => new DeskReservation { DeskId = deskId }).ToList()
+            };
 
-            existingReservation.Id = reservationModel.Id;
-            existingReservation.StartDate = reservationModel.StartDate;
-            existingReservation.EndDate = reservationModel.EndDate;
+            _context.Reservations.Add(reservation);
+            await _context.SaveChangesAsync();
+        }
 
+        public async Task<bool> UpdateAsync(int reservationId, UpdateReservationRequestDto updateDto)
+        {
+            var reservation = await _context.Reservations
+                .Include(r => r.DeskReservations)
+                .FirstOrDefaultAsync(r => r.Id == reservationId);
+
+            if (reservation == null) return false;
+
+            reservation.StartDate = updateDto.StartDate;
+            reservation.EndDate = updateDto.EndDate;
+
+            // Remove existing DeskReservations
+            _context.DeskReservations.RemoveRange(reservation.DeskReservations);
+
+            // Add new DeskReservations
+            reservation.DeskReservations = updateDto.DeskIds.Select(deskId => new DeskReservation { DeskId = deskId, ReservationId = reservationId }).ToList();
 
             await _context.SaveChangesAsync();
+            return true;
+        }
 
-            return existingReservation;
+        public async Task<bool> DeleteAsync(int reservationId)
+        {
+            var reservation = await _context.Reservations
+                .Include(r => r.DeskReservations)
+                .FirstOrDefaultAsync(r => r.Id == reservationId);
+
+            if (reservation == null) return false;
+
+            // Remove related DeskReservations
+            _context.DeskReservations.RemoveRange(reservation.DeskReservations);
+
+            // Remove the reservation itself
+            _context.Reservations.Remove(reservation);
+
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
