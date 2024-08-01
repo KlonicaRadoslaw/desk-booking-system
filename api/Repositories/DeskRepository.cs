@@ -34,15 +34,28 @@ namespace api.Repositories
 
         public async Task<List<Desk>> GetAllAsync()
         {
-            var locations = await _context
-                .Desks
-                .ToListAsync();
-            return locations;
+            var desks = await _context.Desks
+            .Include(d => d.Location)
+            .ToListAsync();
+
+            return desks;
+        }
+
+        public async Task<List<Desk>> GetByLocationId(int locationId)
+        {
+            var desks = await _context.Desks
+            .Where(d => d.LocationId == locationId)
+            .Include(d => d.Location)
+            .ToListAsync();
+            return desks;
         }
 
         public async Task<Desk?> GetByIdAsync(int id)
         {
-            return await _context.Desks.FirstOrDefaultAsync(l => l.Id == id);
+            return await _context
+                .Desks
+                .Include(d => d.Location)
+                .FirstOrDefaultAsync(l => l.Id == id);
         }
 
         public async Task<Desk?> UpdateAsync(int id, UpdateDeskRequestDto deskModel)

@@ -10,5 +10,6 @@ namespace api.Interfaces
         Task<Desk> CreateAsync(Desk deskModel);
         Task<Desk?> UpdateAsync(int id, UpdateDeskRequestDto deskModel);
         Task<Desk?> DeleteAsync(int id);
+        Task<List<Desk>> GetByLocationId(int locationId);
     }
 }
