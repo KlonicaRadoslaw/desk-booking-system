@@ -44,7 +44,8 @@ namespace api.Repositories
 
         public async Task<Location?> GetByIdAsync(int id)
         {
-            return await _context.Locations.FirstOrDefaultAsync(l => l.Id == id);
+            return await _context.Locations.Include(d => d.Desks).
+                FirstOrDefaultAsync(l => l.Id == id);
         }
 
         public async Task<Location?> UpdateAsync(int id, UpdateLocationRequestDto locationModel)

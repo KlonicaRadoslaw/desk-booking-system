@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace api.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -168,14 +168,34 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Reservations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reservations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reservations_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Desks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     LocationId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "bit", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -185,33 +205,66 @@ namespace api.Migrations
                         column: x => x.LocationId,
                         principalTable: "Locations",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reservations",
+                name: "DeskReservations",
                 columns: table => new
                 {
-                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DeskId = table.Column<int>(type: "int", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ReservationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Reservations", x => new { x.AppUserId, x.DeskId, x.StartDate });
+                    table.PrimaryKey("PK_DeskReservations", x => new { x.DeskId, x.ReservationId });
                     table.ForeignKey(
-                        name: "FK_Reservations_AspNetUsers_AppUserId",
-                        column: x => x.AppUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Reservations_Desks_DeskId",
+                        name: "FK_DeskReservations_Desks_DeskId",
                         column: x => x.DeskId,
                         principalTable: "Desks",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DeskReservations_Reservations_ReservationId",
+                        column: x => x.ReservationId,
+                        principalTable: "Reservations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "b0982f5c-e422-4619-bab1-3b81c20ce4b1", "e89d1638-2a45-4311-9fe6-1634e1e0a1a6", "Admin", "ADMIN" },
+                    { "f3844682-0c5b-43bb-94a7-0b3ba4b45bd8", "46e5c0bb-5c69-4b1b-8e41-f335f2a1dc2f", "User", "USER" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Locations",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Floor 1" },
+                    { 2, "Floor 2" },
+                    { 3, "Floor 3" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Desks",
+                columns: new[] { "Id", "LocationId", "Name" },
+                values: new object[,]
+                {
+                    { 1, 1, "Desk 1" },
+                    { 2, 1, "Desk 2" },
+                    { 3, 1, "Desk 3" },
+                    { 4, 2, "Desk 4" },
+                    { 5, 2, "Desk 5" },
+                    { 6, 2, "Desk 6" },
+                    { 7, 3, "Desk 7" },
+                    { 8, 3, "Desk 8" },
+                    { 9, 3, "Desk 9" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -254,15 +307,19 @@ namespace api.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DeskReservations_ReservationId",
+                table: "DeskReservations",
+                column: "ReservationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Desks_LocationId",
                 table: "Desks",
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_DeskId_StartDate_EndDate",
+                name: "IX_Reservations_AppUserId",
                 table: "Reservations",
-                columns: new[] { "DeskId", "StartDate", "EndDate" },
-                unique: true);
+                column: "AppUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -283,19 +340,22 @@ namespace api.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Reservations");
+                name: "DeskReservations");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "Desks");
 
             migrationBuilder.DropTable(
+                name: "Reservations");
+
+            migrationBuilder.DropTable(
                 name: "Locations");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

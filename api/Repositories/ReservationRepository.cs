@@ -23,7 +23,7 @@ namespace api.Repositories
 
         public async Task<Reservation?> DeleteAsync(int id)
         {
-            var reservationModel = _context.Reservations.FirstOrDefault(x => x.DeskId == id);
+            var reservationModel = _context.Reservations.FirstOrDefault(x => x.Id == id);
             if (reservationModel == null)
                 return null;
 
@@ -42,17 +42,17 @@ namespace api.Repositories
 
         public async Task<Reservation?> GetByIdAsync(int id)
         {
-            return await _context.Reservations.FirstOrDefaultAsync(l => l.DeskId == id);
+            return await _context.Reservations.FirstOrDefaultAsync(l => l.Id == id);
         }
 
         public async Task<Reservation?> UpdateAsync(int id, UpdateReservationRequestDto reservationModel)
         {
-            var existingReservation = await _context.Reservations.FirstOrDefaultAsync(r => r.DeskId == id);
+            var existingReservation = await _context.Reservations.FirstOrDefaultAsync(r => r.Id == id);
 
             if (existingReservation == null)
                 return null;
 
-            existingReservation.DeskId = reservationModel.DeskId;
+            existingReservation.Id = reservationModel.Id;
             existingReservation.StartDate = reservationModel.StartDate;
             existingReservation.EndDate = reservationModel.EndDate;
 

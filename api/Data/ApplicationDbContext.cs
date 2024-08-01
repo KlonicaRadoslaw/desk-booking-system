@@ -10,6 +10,7 @@ namespace api.Data
         public DbSet<Location> Locations { get; set; }
         public DbSet<Desk> Desks { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<DeskReservation> DeskReservations { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -18,16 +19,22 @@ namespace api.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Location>()
-                .HasMany(l => l.Desks)
-                .WithOne(d => d.Location)
-                .HasForeignKey(d => d.LocationId)
-                .OnDelete(DeleteBehavior.Restrict);
+            .HasMany(l => l.Desks)
+            .WithOne(d => d.Location)
+            .HasForeignKey(d => d.LocationId);
 
-            modelBuilder.Entity<Desk>()
-                .HasMany(d => d.Reservations)
-                .WithOne(r => r.Desk)
-                .HasForeignKey(r => r.DeskId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<DeskReservation>()
+                .HasKey(dr => new { dr.DeskId, dr.ReservationId });
+
+            modelBuilder.Entity<DeskReservation>()
+                .HasOne(dr => dr.Desk)
+                .WithMany(d => d.DeskReservations)
+                .HasForeignKey(dr => dr.DeskId);
+
+            modelBuilder.Entity<DeskReservation>()
+                .HasOne(dr => dr.Reservation)
+                .WithMany(r => r.DeskReservations)
+                .HasForeignKey(dr => dr.ReservationId);
 
             modelBuilder.Entity<Reservation>()
                 .HasOne(r => r.AppUser)
@@ -35,16 +42,6 @@ namespace api.Data
                 .HasForeignKey(r => r.AppUserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Desk>()
-                .Property(d => d.IsAvailable)
-                .IsRequired();
-
-            modelBuilder.Entity<Reservation>()
-                .HasKey(r => new { r.AppUserId, r.DeskId, r.StartDate });
-
-            modelBuilder.Entity<Reservation>()
-                .HasIndex(r => new { r.DeskId, r.StartDate, r.EndDate })
-                .IsUnique();
 
             List<IdentityRole> roles = new List<IdentityRole>
             {
@@ -61,6 +58,7 @@ namespace api.Data
             };
             modelBuilder.Entity<IdentityRole>().HasData(roles);
 
+
             modelBuilder.Entity<Location>().HasData(
             new Location { Id = 1, Name = "Floor 1" },
             new Location { Id = 2, Name = "Floor 2" },
@@ -68,15 +66,15 @@ namespace api.Data
             );
 
             modelBuilder.Entity<Desk>().HasData(
-               new Desk { Id = 1, LocationId = 1, Name = "Desk 1", IsAvailable = true },
-               new Desk { Id = 2, LocationId = 1, Name = "Desk 2", IsAvailable = true },
-               new Desk { Id = 3, LocationId = 1, Name = "Desk 3", IsAvailable = false },
-               new Desk { Id = 4, LocationId = 2, Name = "Desk 4", IsAvailable = true },
-               new Desk { Id = 5, LocationId = 2, Name = "Desk 5", IsAvailable = true },
-               new Desk { Id = 6, LocationId = 2, Name = "Desk 6", IsAvailable = false },
-               new Desk { Id = 7, LocationId = 3, Name = "Desk 7", IsAvailable = true },
-               new Desk { Id = 8, LocationId = 3, Name = "Desk 8", IsAvailable = true },
-               new Desk { Id = 9, LocationId = 3, Name = "Desk 9", IsAvailable = true }
+               new Desk { Id = 1, LocationId = 1, Name = "Desk 1", isAvailable = true },
+               new Desk { Id = 2, LocationId = 1, Name = "Desk 2", isAvailable = true },
+               new Desk { Id = 3, LocationId = 1, Name = "Desk 3", isAvailable = true },
+               new Desk { Id = 4, LocationId = 2, Name = "Desk 4", isAvailable = true },
+               new Desk { Id = 5, LocationId = 2, Name = "Desk 5", isAvailable = true },
+               new Desk { Id = 6, LocationId = 2, Name = "Desk 6", isAvailable = true },
+               new Desk { Id = 7, LocationId = 3, Name = "Desk 7", isAvailable = true },
+               new Desk { Id = 8, LocationId = 3, Name = "Desk 8", isAvailable = true },
+               new Desk { Id = 9, LocationId = 3, Name = "Desk 9", isAvailable = true }
            );
         }
     }

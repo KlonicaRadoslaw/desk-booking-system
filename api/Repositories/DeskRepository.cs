@@ -54,7 +54,7 @@ namespace api.Repositories
 
             existingDesk.Name = deskModel.Name;
             existingDesk.LocationId = deskModel.LocationId;
-            existingDesk.IsAvailable = deskModel.IsAvailable;
+            existingDesk.isAvailable = deskModel.isAvailable;
 
 
             await _context.SaveChangesAsync();

@@ -95,15 +95,15 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("bit");
-
                     b.Property<int>("LocationId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isAvailable")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -115,66 +115,81 @@ namespace api.Migrations
                         new
                         {
                             Id = 1,
-                            IsAvailable = true,
                             LocationId = 1,
-                            Name = "Desk 1"
+                            Name = "Desk 1",
+                            isAvailable = true
                         },
                         new
                         {
                             Id = 2,
-                            IsAvailable = true,
                             LocationId = 1,
-                            Name = "Desk 2"
+                            Name = "Desk 2",
+                            isAvailable = true
                         },
                         new
                         {
                             Id = 3,
-                            IsAvailable = false,
                             LocationId = 1,
-                            Name = "Desk 3"
+                            Name = "Desk 3",
+                            isAvailable = true
                         },
                         new
                         {
                             Id = 4,
-                            IsAvailable = true,
                             LocationId = 2,
-                            Name = "Desk 4"
+                            Name = "Desk 4",
+                            isAvailable = true
                         },
                         new
                         {
                             Id = 5,
-                            IsAvailable = true,
                             LocationId = 2,
-                            Name = "Desk 5"
+                            Name = "Desk 5",
+                            isAvailable = true
                         },
                         new
                         {
                             Id = 6,
-                            IsAvailable = false,
                             LocationId = 2,
-                            Name = "Desk 6"
+                            Name = "Desk 6",
+                            isAvailable = true
                         },
                         new
                         {
                             Id = 7,
-                            IsAvailable = true,
                             LocationId = 3,
-                            Name = "Desk 7"
+                            Name = "Desk 7",
+                            isAvailable = true
                         },
                         new
                         {
                             Id = 8,
-                            IsAvailable = true,
                             LocationId = 3,
-                            Name = "Desk 8"
+                            Name = "Desk 8",
+                            isAvailable = true
                         },
                         new
                         {
                             Id = 9,
-                            IsAvailable = true,
                             LocationId = 3,
-                            Name = "Desk 9"
+                            Name = "Desk 9",
+                            isAvailable = true
                         });
+                });
+
+            modelBuilder.Entity("api.Models.DeskReservation", b =>
+                {
+                    b.Property<int>("DeskId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReservationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DeskId", "ReservationId");
+
+                    b.HasIndex("ReservationId");
+
+                    b.ToTable("DeskReservations");
                 });
 
             modelBuilder.Entity("api.Models.Location", b =>
@@ -213,22 +228,25 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Reservation", b =>
                 {
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("DeskId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("AppUserId", "DeskId", "StartDate");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("DeskId", "StartDate", "EndDate")
-                        .IsUnique();
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("Reservations");
                 });
@@ -262,15 +280,15 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "37047047-f575-476a-a6c2-3a6d76fc9a21",
-                            ConcurrencyStamp = "1b8c43b4-210c-47b9-b873-25ad3c533919",
+                            Id = "dbb92aed-f396-414a-8c15-c1eb5a395f1d",
+                            ConcurrencyStamp = "f99cee55-77c1-449c-a938-6305d74d1304",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "fcaab8d5-3f06-47fe-a969-aa58d4f2b12f",
-                            ConcurrencyStamp = "28dfd03d-4487-4921-ae62-a5b445ccca52",
+                            Id = "5bc772af-cb4a-4646-9176-f361fa6df27b",
+                            ConcurrencyStamp = "55566ac7-ae2f-436b-bf6b-35e1b661d9ad",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -387,10 +405,29 @@ namespace api.Migrations
                     b.HasOne("api.Models.Location", "Location")
                         .WithMany("Desks")
                         .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("api.Models.DeskReservation", b =>
+                {
+                    b.HasOne("api.Models.Desk", "Desk")
+                        .WithMany("DeskReservations")
+                        .HasForeignKey("DeskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.Reservation", "Reservation")
+                        .WithMany("DeskReservations")
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Desk");
+
+                    b.Navigation("Reservation");
                 });
 
             modelBuilder.Entity("api.Models.Reservation", b =>
@@ -401,15 +438,7 @@ namespace api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("api.Models.Desk", "Desk")
-                        .WithMany("Reservations")
-                        .HasForeignKey("DeskId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("AppUser");
-
-                    b.Navigation("Desk");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -470,12 +499,17 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Desk", b =>
                 {
-                    b.Navigation("Reservations");
+                    b.Navigation("DeskReservations");
                 });
 
             modelBuilder.Entity("api.Models.Location", b =>
                 {
                     b.Navigation("Desks");
+                });
+
+            modelBuilder.Entity("api.Models.Reservation", b =>
+                {
+                    b.Navigation("DeskReservations");
                 });
 #pragma warning restore 612, 618
         }
