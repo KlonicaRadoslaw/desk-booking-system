@@ -45,6 +45,7 @@ namespace api.Controllers
                         return Ok(
                             new NewUserDto
                             {
+                                Id = appUser.Id,
                                 UserName = appUser.UserName,
                                 Email = appUser.Email,
                                 Token = _tokenService.GenerateToken(appUser)
@@ -86,6 +87,7 @@ namespace api.Controllers
             return Ok(
                 new NewUserDto
                 {
+                    Id = user.Id,
                     UserName = user.UserName,
                     Email = user.Email,
                     Token = _tokenService.GenerateToken(user)

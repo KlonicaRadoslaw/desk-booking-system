@@ -129,5 +129,14 @@ namespace api.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> IsDeskAvailableAsync(int deskId, DateTime startDate, DateTime endDate)
+        {
+            return !await _context.Reservations
+                .Where(r => r.DeskReservations.Any(dr => dr.DeskId == deskId) &&
+                            r.StartDate < endDate &&
+                            r.EndDate > startDate)
+                .AnyAsync();
+        }
     }
 }

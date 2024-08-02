@@ -11,5 +11,6 @@ namespace api.Interfaces
         Task CreateAsync(CreateReservationRequestDto reservationDto);
         Task<bool> UpdateAsync(int reservationId, UpdateReservationRequestDto updateDto);
         Task<bool> DeleteAsync(int reservationId);
+        Task<bool> IsDeskAvailableAsync(int deskId, DateTime startDate, DateTime endDate);
     }
 }

@@ -18,7 +18,7 @@ namespace api.Tests.Reservation
         public ReservationServiceTests()
         {
             _context = TestContextFactory.GetTestDatabaseContext().Result;
-            _service = new ReservationRepository(_context); // Assuming ReservationService uses ApplicationDbContext
+            _service = new ReservationRepository(_context);
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace api.Tests.Reservation
                 UserId = "02837bed-d7eb-4471-a986-396e5878efb9",
                 StartDate = DateTime.UtcNow,
                 EndDate = DateTime.UtcNow.AddDays(1),
-                DeskIds = new List<int> { 1 } // Adjust this ID according to your test setup
+                DeskIds = new List<int> { 1 }
             };
 
             // Act
@@ -53,7 +53,7 @@ namespace api.Tests.Reservation
         public async Task GetReservationById_ShouldReturnNull()
         {
             // Arrange
-            var reservationId = 999; // Assuming this ID exists
+            var reservationId = 999;
 
             // Act
             var reservation = await _service.GetByIdAsync(reservationId);
@@ -66,7 +66,7 @@ namespace api.Tests.Reservation
         public async Task UpdateReservation_ShouldUpdateReservationDetails()
         {
             // Arrange
-            var reservationId = 1; // Assuming this ID exists
+            var reservationId = 1;
             var updateDto = new UpdateReservationRequestDto
             {
                 StartDate = DateTime.UtcNow.AddDays(2),
@@ -89,7 +89,7 @@ namespace api.Tests.Reservation
         public async Task DeleteReservation_ShouldRemoveReservation()
         {
             // Arrange
-            var reservationId = 1; // Assuming this ID exists
+            var reservationId = 1; 
 
             // Act
             var success = await _service.DeleteAsync(reservationId);
