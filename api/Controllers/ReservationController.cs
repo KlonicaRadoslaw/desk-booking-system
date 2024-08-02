@@ -49,6 +49,15 @@ namespace api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateReservation([FromBody] CreateReservationRequestDto createReservationDto)
         {
+            foreach (var deskId in createReservationDto.DeskIds)
+            {
+                var isOverlapping = await _reservationRepository.IsDeskReservedAsync(deskId, createReservationDto.StartDate, createReservationDto.EndDate);
+                if (isOverlapping)
+                {
+                    return Conflict($"Desk {deskId} is already reserved during the chosen dates.");
+                }
+            }
+
             await _reservationRepository.CreateAsync(createReservationDto);
 
             var createdReservation = await _reservationRepository.GetByUserIdAsync(createReservationDto.UserId);

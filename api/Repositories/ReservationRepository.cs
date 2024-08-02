@@ -134,5 +134,15 @@ namespace api.Repositories
                             r.EndDate > startDate)
                 .AnyAsync();
         }
+
+        public async Task<bool> IsDeskReservedAsync(int deskId, DateTime startDate, DateTime endDate)
+        {
+            return await _context.DeskReservations
+                .Where(dr => dr.DeskId == deskId)
+                .Select(dr => dr.Reservation)
+                .AnyAsync(r =>
+                    r.StartDate < endDate &&
+                    r.EndDate > startDate);
+        }
     }
 }

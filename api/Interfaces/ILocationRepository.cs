@@ -10,5 +10,7 @@ namespace api.Interfaces
         Task<Location> CreateAsync(Location locationModel);
         Task<Location?> UpdateAsync(int id, UpdateLocationRequestDto locationModel);
         Task<Location?> DeleteAsync(int id);
+        Task<Location> GetByNameAsync(string name);
+
     }
 }

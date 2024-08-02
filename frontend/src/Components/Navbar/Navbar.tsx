@@ -16,8 +16,20 @@ const Navbar = (props: Props) => {
             <img className='object-cover h-12 w-24' src={logo} alt="" />
           </Link>
           <div className="hidden font-bold lg:flex">
-            <Link to="/search" className="text-black hover:text-darkBlue">
-              Search
+            <Link to="/create-reservation" className="text-black hover:text-darkBlue mr-3">
+              New Reservation
+            </Link>
+            <Link to="/create-location" className="text-black hover:text-darkBlue  mr-3">
+              New Location
+            </Link>
+            <Link to="/create-desk" className="text-black hover:text-darkBlue  mr-3">
+              New Desk
+            </Link>
+            <Link to="/locations" className="text-black hover:text-darkBlue  mr-3">
+              Locations
+            </Link>
+            <Link to="/desks" className="text-black hover:text-darkBlue  mr-3">
+              Desks
             </Link>
           </div>
         </div>

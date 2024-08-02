@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { createLocation } from '../../../Services/LocationService';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LocationForm = () => {
     const [location, setLocation] = useState({
@@ -17,17 +19,38 @@ const LocationForm = () => {
         e.preventDefault();
         try {
             await createLocation(location);
-            alert('Location created successfully');
+            toast.success('Location created successfully');
+            setLocation({ name: '' });
         } catch (error) {
-            alert('Error creating location');
+            toast.error('Error creating location');
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input type="text" name="name" value={location.name} onChange={handleChange} placeholder="Location Name" />
-            <button type="submit">Create Location</button>
-        </form>
+        <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+            <h2 className="text-2xl font-semibold mb-4">Create Location</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="flex flex-col">
+                    <label htmlFor="name" className="mb-2 font-medium text-gray-700">Location Name</label>
+                    <input
+                        type="text"
+                        name="name"
+                        id="name"
+                        value={location.name}
+                        onChange={handleChange}
+                        placeholder="Enter location name"
+                        className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                    />
+                </div>
+                <button
+                    type="submit"
+                    className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    Create Location
+                </button>
+            </form>
+        </div>
     );
 };
 

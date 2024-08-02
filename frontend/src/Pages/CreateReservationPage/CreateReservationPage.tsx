@@ -4,7 +4,6 @@ import ReservationForm from '../../Components/Reservation/ReservationForm/Reserv
 const DeskListPage = () => {
     return (
         <div>
-            <h1>Reservation</h1>
             <ReservationForm />
         </div>
     );

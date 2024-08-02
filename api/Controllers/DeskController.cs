@@ -65,6 +65,13 @@ namespace api.Controllers
                 return BadRequest(ModelState);
 
             var deskModel = deskDto.ToDeskFromCreateDto();
+
+            var existingDesk = await _deskRepository.GetByNameAndLocationAsync(deskModel.Name, deskModel.LocationId);
+            if (existingDesk != null)
+            {
+                return Conflict("A desk with the same name already exists in the specified location.");
+            }
+
             await _deskRepository.CreateAsync(deskModel);
             return CreatedAtAction(nameof(GetDeskById), new { id = deskModel.Id }, deskModel.ToDeskDto());
         }

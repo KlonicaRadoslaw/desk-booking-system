@@ -13,7 +13,7 @@ const getAuthHeaders = () => {
 
 export const createReservation = async (reservation: any) => {
     try {
-        const response = await axios.post(API_URL, reservation);
+        const response = await axios.post(API_URL, reservation, getAuthHeaders());
         return response.data;
     } catch (error) {
         throw error;

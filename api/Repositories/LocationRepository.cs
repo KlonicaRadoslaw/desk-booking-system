@@ -61,5 +61,12 @@ namespace api.Repositories
 
             return existingLocation;
         }
+
+        public async Task<Location> GetByNameAsync(string name)
+        {
+            return await _context.Locations
+                .Where(l => l.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                .FirstOrDefaultAsync();
+        }
     }
 }

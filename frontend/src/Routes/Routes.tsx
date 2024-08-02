@@ -19,7 +19,6 @@ export const router = createBrowserRouter([
             {path: "login", element: <LoginPage/>},
             {path: "register", element: <RegisterPage/>},
             {path: "create-reservation", element: <ProtectedRoute><CreateReservationPage/></ProtectedRoute>},
-            {path: "reservations", element: <RegisterPage/>},
             {path: "create-location", element: <ProtectedRoute><CreateLocationPage/> </ProtectedRoute>},
             {path: "locations", element: <ProtectedRoute><LocationListPage/></ProtectedRoute>},
             {path: "create-desk", element: <ProtectedRoute><CreateDeskPage/></ProtectedRoute>},

@@ -51,6 +51,13 @@ namespace api.Controllers
                 return BadRequest(ModelState);
 
             var locationModel = locationDto.ToLocationFromCreateDto();
+
+            var existingLocation = await _locationRepository.GetByNameAsync(locationModel.Name);
+            if (existingLocation != null)
+            {
+                return Conflict("A location with the same name already exists.");
+            }
+
             await _locationRepository.CreateAsync(locationModel);
             return CreatedAtAction(nameof(GetLocationById), new { id = locationModel.Id }, locationModel.ToLocationDto());
         }
