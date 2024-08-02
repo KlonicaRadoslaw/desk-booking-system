@@ -61,7 +61,7 @@ const ReservationForm = () => {
 
         try {
             const isAvailable = await getDeskAvailability(deskId, startDate, endDate);
-            if (isAvailable) {
+            if (isAvailable == false) {
                 setError('The selected desk is not available for the chosen dates');
                 return;
             }
@@ -83,9 +83,9 @@ const ReservationForm = () => {
         };
 
         try {
-            await createReservation(reservation);
-            setError('');
-            alert('Desk reserved successfully');
+                await createReservation(reservation);
+                setError('');
+                alert('Desk reserved successfully'); 
         } catch (err) {
             setError('Error creating reservation');
         }

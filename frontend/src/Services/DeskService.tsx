@@ -46,12 +46,7 @@ export const getDesksByLocation = async (locationId: string) => {
 
 
 export const getDeskAvailability = async (deskId: string, startDate: Date, endDate: Date) => {
-    const response = await axios.get(`https://localhost:7041/api/Reservation/availability`, {
-        params: {
-            deskId: deskId,
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-        },
-    });
+    const response = await axios.get(`https://localhost:7041/api/Reservation/availability?deskId=${deskId}&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
+    );
     return response.data.isAvailable;
 };

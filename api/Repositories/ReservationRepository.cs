@@ -102,10 +102,8 @@ namespace api.Repositories
             reservation.StartDate = updateDto.StartDate;
             reservation.EndDate = updateDto.EndDate;
 
-            // Remove existing DeskReservations
             _context.DeskReservations.RemoveRange(reservation.DeskReservations);
 
-            // Add new DeskReservations
             reservation.DeskReservations = updateDto.DeskIds.Select(deskId => new DeskReservation { DeskId = deskId, ReservationId = reservationId }).ToList();
 
             await _context.SaveChangesAsync();
@@ -120,10 +118,8 @@ namespace api.Repositories
 
             if (reservation == null) return false;
 
-            // Remove related DeskReservations
             _context.DeskReservations.RemoveRange(reservation.DeskReservations);
 
-            // Remove the reservation itself
             _context.Reservations.Remove(reservation);
 
             await _context.SaveChangesAsync();
