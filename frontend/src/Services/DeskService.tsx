@@ -50,3 +50,9 @@ export const getDeskAvailability = async (deskId: string, startDate: Date, endDa
     , getAuthHeaders());
     return response.data.isAvailable;
 };
+
+
+export const updateDesk = async (id: number, deskData: any) => {
+    const response = await axios.put(`${API_URL}/${id}`, deskData);
+    return response.data;
+};

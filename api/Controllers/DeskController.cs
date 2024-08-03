@@ -84,6 +84,12 @@ namespace api.Controllers
             if (deskModel == null) 
                 return NotFound();
 
+            var existingDesk = await _deskRepository.GetByNameAndLocationAsync(deskModel.Name, deskModel.LocationId);
+            if (existingDesk != null)
+            {
+                return Conflict("A desk with the same name already exists in the specified location.");
+            }
+
             return Ok(deskModel.ToDeskDto());
         }
 

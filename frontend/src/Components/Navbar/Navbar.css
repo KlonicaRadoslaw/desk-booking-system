@@ -1,0 +1,11 @@
+.react-dropdown-menu {
+    @apply bg-white border border-gray-300 rounded-md shadow-lg mt-1;
+}
+
+.react-dropdown-menu .Dropdown-option {
+    @apply px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer;
+}
+
+.react-dropdown-menu .Dropdown-option:hover {
+    @apply bg-gray-100;
+}
