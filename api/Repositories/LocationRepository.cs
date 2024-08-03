@@ -24,7 +24,10 @@ namespace api.Repositories
 
         public async Task<Location?> DeleteAsync(int id)
         {
-            var locationModel = _context.Locations.FirstOrDefault(x => x.Id == id);
+            var locationModel = await _context.Locations
+                .Include(l => l.Desks)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
             if (locationModel == null)
                 return null;
 
@@ -32,6 +35,7 @@ namespace api.Repositories
             await _context.SaveChangesAsync();
             return locationModel;
         }
+
 
         public async Task<List<Location>> GetAllAsync()
         {

@@ -83,10 +83,15 @@ namespace api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var locationModel = await _locationRepository.DeleteAsync(id);
+            var locationModel = await _locationRepository.GetByIdAsync(id);
 
-            if (locationModel == null) 
+            if (locationModel.Desks.Any())
+                return Conflict("Location has desks!");
+
+            if (locationModel == null)
                 return NotFound();
+
+            await _locationRepository.DeleteAsync(id);
 
             return NoContent();
         }

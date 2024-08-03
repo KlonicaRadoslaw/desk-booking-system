@@ -37,3 +37,12 @@ export const getAllLocations = async () => {
         throw error;
     }
 };
+
+export const deleteLocation = async (id: number) => {
+    try {
+        const response = await axios.delete(`${API_URL}/${id}`, getAuthHeaders());
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

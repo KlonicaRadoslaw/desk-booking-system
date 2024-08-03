@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { getAllReservations } from '../../../Services/ReservationService';
+import Spinner from '../../Spinner/Spinner';
 
 const ReservationsList = () => {
     const [reservations, setReservations] = useState<any[]>([]);
@@ -24,7 +25,7 @@ const ReservationsList = () => {
         fetchReservations();
     }, []);
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <p><Spinner/></p>;
     if (error) return <p className="text-red-500">{error}</p>;
 
     return (
