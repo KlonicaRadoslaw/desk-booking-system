@@ -25,7 +25,7 @@ const ReservationForm = () => {
         if (locationId) {
             fetchDesks(locationId);
         }
-    }, [locationId]);
+    }, [locationId, startDate, endDate]);
 
     const fetchLocations = async () => {
         try {
@@ -39,8 +39,18 @@ const ReservationForm = () => {
 
     const fetchDesks = async (locationId: string) => {
         try {
-            const result = await getDesksByLocation(locationId);
-            setDesks(result);
+            const allDesks = await getDesksByLocation(locationId);
+            if (startDate && endDate) {
+                const availableDesksPromises = allDesks.map(async (desk: any) => {
+                    const isAvailable = await getDeskAvailability(desk.id, startDate, endDate);
+                    return { ...desk, isAvailable };
+                });
+                const desksWithAvailability = await Promise.all(availableDesksPromises);
+                const filteredDesks = desksWithAvailability.filter(desk => desk.isAvailable);
+                setDesks(filteredDesks);
+            } else {
+                setDesks(allDesks);
+            }
         } catch (err) {
             toast.error('Error fetching desks');
             console.error('Error fetching desks', err);
@@ -65,19 +75,6 @@ const ReservationForm = () => {
             return;
         }
 
-        try {
-            const isAvailable = await getDeskAvailability(deskId, startDate, endDate);
-            if (isAvailable == false) {
-                toast.error('The selected desk is not available for the chosen dates');
-                setError('The selected desk is not available for the chosen dates');
-                return;
-            }
-        } catch (err) {
-            toast.error('Error checking desk availability');
-            setError('Error checking desk availability');
-            return;
-        }
-
         if (!user) {
             toast.error('User is not authenticated. Please log in.');
             setError('User is not authenticated. Please log in.');
@@ -92,9 +89,9 @@ const ReservationForm = () => {
         };
 
         try {
-                await createReservation(reservation);
-                setError('');
-                toast.success('Desk reserved successfully'); 
+            await createReservation(reservation);
+            setError('');
+            toast.success('Desk reserved successfully');
         } catch (err: any) {
             if (err.response && err.response.status === 409) {
                 toast.error('Desk is already reserved');
@@ -136,9 +133,11 @@ const ReservationForm = () => {
                     >
                         <option value="">Select a desk</option>
                         {desks.map((desk) => (
-                            <option key={desk.id} value={desk.id}>
-                                {desk.name}
-                            </option>
+                            desk.isAvailable ? (
+                                <option key={desk.id} value={desk.id}>
+                                    {desk.name}
+                                </option>
+                            ) : null
                         ))}
                     </select>
                 </div>
@@ -147,7 +146,12 @@ const ReservationForm = () => {
                     <label className="mb-2 font-medium">Start Date:</label>
                     <DatePicker
                         selected={startDate}
-                        onChange={(date: Date | null) => setStartDate(date)}
+                        onChange={(date: Date | null) => {
+                            setStartDate(date);
+                            if (endDate && date && date > endDate) {
+                                setEndDate(null);
+                            }
+                        }}
                         selectsStart
                         startDate={startDate || undefined}
                         endDate={endDate || undefined}
