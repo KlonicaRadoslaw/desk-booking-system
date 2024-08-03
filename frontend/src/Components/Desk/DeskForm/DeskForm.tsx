@@ -37,8 +37,12 @@ const DeskForm = () => {
             await createDesk(desk);
             toast.success('Desk created successfully');
             setDesk({ locationId: '', name: '', isAvailable: true });
-        } catch (error) {
-            toast.error('Error creating desk');
+        } catch (error: any) {
+            if (error.response && error.response.status === 409) {
+                toast.error('A desk with the same name already exists in the specified location');
+            } else {
+                toast.error('Error creating desk');
+            }
         }
     };
 

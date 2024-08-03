@@ -10,9 +10,9 @@ namespace api.Repositories
     {
         private readonly ApplicationDbContext _context;
 
-        public LocationRepository(ApplicationDbContext context) 
+        public LocationRepository(ApplicationDbContext context)
         {
-                _context = context;
+            _context = context;
         }
 
         public async Task<Location> CreateAsync(Location locationModel)
@@ -54,7 +54,7 @@ namespace api.Repositories
 
             if (existingLocation == null)
                 return null;
-            
+
             existingLocation.Name = locationModel.Name;
 
             await _context.SaveChangesAsync();
@@ -64,9 +64,11 @@ namespace api.Repositories
 
         public async Task<Location> GetByNameAsync(string name)
         {
-            return await _context.Locations
-                .Where(l => l.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
-                .FirstOrDefaultAsync();
+            return await Task.Run(() =>
+            _context.Locations
+                    .AsEnumerable()
+                    .FirstOrDefault(d => string.Equals(d.Name, name, StringComparison.OrdinalIgnoreCase))
+        );
         }
     }
 }

@@ -95,8 +95,12 @@ const ReservationForm = () => {
                 await createReservation(reservation);
                 setError('');
                 toast.success('Desk reserved successfully'); 
-        } catch (err) {
-            toast.error('Error creating reservation');
+        } catch (err: any) {
+            if (err.response && err.response.status === 409) {
+                toast.error('Desk is already reserved');
+            } else {
+                toast.error('Error creating reservation');
+            }
             setError('Error creating reservation');
         }
     };

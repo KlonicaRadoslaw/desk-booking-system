@@ -75,11 +75,14 @@ namespace api.Repositories
             return existingDesk;
         }
 
-        public async Task<Desk> GetByNameAndLocationAsync(string name, int locationId)
+        public async Task<Desk?> GetByNameAndLocationAsync(string name, int locationId)
         {
-            return await _context.Desks
-                .Where(d => d.Name.Equals(name, StringComparison.OrdinalIgnoreCase) && d.LocationId == locationId)
-                .FirstOrDefaultAsync();
+            return await Task.Run(() =>
+            _context.Desks
+                    .Where(d => d.LocationId == locationId)
+                    .AsEnumerable()
+                    .FirstOrDefault(d => string.Equals(d.Name, name, StringComparison.OrdinalIgnoreCase))
+        );
         }
     }
 }

@@ -21,8 +21,12 @@ const LocationForm = () => {
             await createLocation(location);
             toast.success('Location created successfully');
             setLocation({ name: '' });
-        } catch (error) {
-            toast.error('Error creating location');
+        } catch (error: any) {
+            if (error.response && error.response.status === 409) {
+                toast.error('A location with the same name already exists');
+            } else {
+                toast.error('Error creating location');
+            }
         }
     };
 
