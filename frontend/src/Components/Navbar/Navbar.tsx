@@ -12,7 +12,8 @@ const Navbar = (props: Props) => {
   const { isLoggedIn, user, logout } = useAuth();
 
   const reservationOptions = [
-    { value: '/create-reservation', label: 'New Reservation' }
+    { value: '/create-reservation', label: 'New Reservation' },
+    { value: '/reservations', label: 'Reservation List' }
 ];
 const deskOptions = [
     { value: '/desks', label: 'Desks' },

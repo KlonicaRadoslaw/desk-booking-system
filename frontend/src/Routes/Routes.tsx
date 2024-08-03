@@ -10,6 +10,7 @@ import CreateDeskPage from "../Pages/CreateDeskPage/CreateDeskPage";
 import DeskListPage from "../Pages/DeskListPage/DeskListPage";
 import CreateReservationPage from "../Pages/CreateReservationPage/CreateReservationPage";
 import UpdateDeskPage from "../Pages/UpdateDeskPage/UpdateDeskPage";
+import ReservationListPage from "../Pages/ReservationListPage/ReservationListPage";
 
 export const router = createBrowserRouter([
     {
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
             {path: "login", element: <LoginPage/>},
             {path: "register", element: <RegisterPage/>},
             {path: "create-reservation", element: <ProtectedRoute><CreateReservationPage/></ProtectedRoute>},
+            {path: "reservations", element: <ProtectedRoute><ReservationListPage/></ProtectedRoute>},
             {path: "create-location", element: <ProtectedRoute><CreateLocationPage/> </ProtectedRoute>},
             {path: "locations", element: <ProtectedRoute><LocationListPage/></ProtectedRoute>},
             {path: "create-desk", element: <ProtectedRoute><CreateDeskPage/></ProtectedRoute>},
