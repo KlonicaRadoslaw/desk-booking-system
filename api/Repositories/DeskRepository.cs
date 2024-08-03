@@ -54,6 +54,7 @@ namespace api.Repositories
         {
             return await _context
                 .Desks
+                .Include(d => d.DeskReservations)
                 .Include(d => d.Location)
                 .FirstOrDefaultAsync(l => l.Id == id);
         }

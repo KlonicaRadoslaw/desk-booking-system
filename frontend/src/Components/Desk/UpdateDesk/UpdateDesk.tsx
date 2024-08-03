@@ -1,11 +1,9 @@
-// UpdateDesk.tsx
 import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-import { getAllDesks, updateDesk } from '../../../Services/DeskService';
+import { getAllDesks, updateDesk, deleteDesk } from '../../../Services/DeskService';
 import { getAllLocations } from '../../../Services/LocationService';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// Define interfaces for Desk and Location
 interface Desk {
     id: number;
     name: string;
@@ -71,6 +69,17 @@ const UpdateDesk: React.FC = () => {
         }
     };
 
+    const handleDelete = async (id: number) => {
+        try {
+            await deleteDesk(id);
+            toast.success('Desk deleted successfully');
+            fetchDesks(); // Refresh the desk list
+        } catch (error: any) {
+            toast.error('Desk is available or reserved');
+            console.error(error);
+        }
+    };
+
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, type, value } = e.target;
         const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
@@ -100,12 +109,18 @@ const UpdateDesk: React.FC = () => {
                             <td className="py-2 px-4 border-b">{desk.name}</td>
                             <td className="py-2 px-4 border-b">{desk.location.name}</td>
                             <td className="py-2 px-4 border-b">{desk.isAvailable ? 'Available' : 'Unavailable'}</td>
-                            <td className="py-2 px-4 border-b">
+                            <td className="py-2 px-4 border-b flex space-x-2">
                                 <button
                                     className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
                                     onClick={() => handleEdit(desk)}
                                 >
                                     Edit
+                                </button>
+                                <button
+                                    className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                                    onClick={() => handleDelete(desk.id)}
+                                >
+                                    Delete
                                 </button>
                             </td>
                         </tr>

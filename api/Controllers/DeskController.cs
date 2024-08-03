@@ -106,6 +106,9 @@ namespace api.Controllers
             if (desk.DeskReservations.Count > 0)
                 return BadRequest("Cannot delete desk with existing reservations.");
 
+            if (desk.isAvailable == true)
+                return BadRequest("Cannot delete available desk.");
+
             await _deskRepository.DeleteAsync(id);
 
             return NoContent();

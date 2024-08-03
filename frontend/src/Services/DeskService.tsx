@@ -63,3 +63,8 @@ export const getAvailableDesks = async (date: Date) => {
     const response = await axios.get(`${API_URL}/available/${formattedDate}`);
     return response.data;
 };
+
+export const deleteDesk = async (id: number) => {
+    const response = await axios.delete(`${API_URL}/${id}`);
+    return response.data;
+};
