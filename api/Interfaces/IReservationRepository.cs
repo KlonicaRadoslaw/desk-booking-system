@@ -13,5 +13,6 @@ namespace api.Interfaces
         Task<bool> DeleteAsync(int reservationId);
         Task<bool> IsDeskAvailableAsync(int deskId, DateTime startDate, DateTime endDate);
         Task<bool> IsDeskReservedAsync(int deskId, DateTime startDate, DateTime endDate);
+        Task<List<Reservation>> GetReservationsByDate(DateTime date);
     }
 }

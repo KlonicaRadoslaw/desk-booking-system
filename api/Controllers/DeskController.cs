@@ -15,11 +15,13 @@ namespace api.Controllers
     {
         private readonly IDeskRepository _deskRepository;
         private readonly ILocationRepository _locationRepository;
+        private readonly IReservationRepository _reservationRepository;
 
-        public DeskController(IDeskRepository deskRepository, ILocationRepository locationRepository)
+        public DeskController(IDeskRepository deskRepository, ILocationRepository locationRepository, IReservationRepository reservationRepository)
         {
             _deskRepository = deskRepository;
             _locationRepository = locationRepository;
+            _reservationRepository = reservationRepository;
         }
 
         [HttpGet]
@@ -104,9 +106,30 @@ namespace api.Controllers
             if (desk.DeskReservations.Count > 0)
                 return BadRequest("Cannot delete desk with existing reservations.");
 
-            _deskRepository.DeleteAsync(id);
+            await _deskRepository.DeleteAsync(id);
 
             return NoContent();
+        }
+
+        [HttpGet("available/{date}")]
+        public async Task<IActionResult> GetAvailableDesks([FromRoute] DateTime date)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var formattedDate = date.Date;
+
+            var reservations = await _reservationRepository.GetReservationsByDate(formattedDate);
+
+            var reservedDeskIds = new HashSet<int>(
+                reservations.SelectMany(r => r.DeskReservations.Select(dr => dr.DeskId))
+            );
+
+            var availableDesks = await _deskRepository.GetAllAsync();
+
+            var filteredDesks = availableDesks.Where(desk => !reservedDeskIds.Contains(desk.Id)).ToList();
+
+            return Ok(filteredDesks);
         }
     }
 }

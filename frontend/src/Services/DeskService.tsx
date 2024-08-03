@@ -56,3 +56,10 @@ export const updateDesk = async (id: number, deskData: any) => {
     const response = await axios.put(`${API_URL}/${id}`, deskData);
     return response.data;
 };
+
+export const getAvailableDesks = async (date: Date) => {
+    const formattedDate = date.toISOString().split('.')[0];
+
+    const response = await axios.get(`${API_URL}/available/${formattedDate}`);
+    return response.data;
+};

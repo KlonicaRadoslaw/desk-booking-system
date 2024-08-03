@@ -14,12 +14,10 @@ namespace api.Controllers
     public class ReservationController : ControllerBase
     {
         private readonly IReservationRepository _reservationRepository;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ReservationController(IReservationRepository reservationRepository, UserManager<ApplicationUser> userManager)
+        public ReservationController(IReservationRepository reservationRepository)
         {
             _reservationRepository = reservationRepository;
-            _userManager = userManager;
         }
 
         [HttpGet]

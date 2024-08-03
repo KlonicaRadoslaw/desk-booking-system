@@ -144,5 +144,13 @@ namespace api.Repositories
                     r.StartDate < endDate &&
                     r.EndDate > startDate);
         }
+
+        public async Task<List<Reservation>> GetReservationsByDate(DateTime date)
+        {
+            return await _context.Reservations
+                .Where(r => r.StartDate.Date <= date.Date && r.EndDate.Date >= date.Date)
+                .Include(r => r.DeskReservations)
+                .ToListAsync();
+        }
     }
 }
