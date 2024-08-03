@@ -37,3 +37,30 @@ export const getAllReservations = async () => {
         throw error;
     }
 };
+
+export const getUsersReservations = async (userId: string) => {
+    try {
+        const response = await axios.get(`${API_URL}/user/${userId}`, getAuthHeaders());
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteReservation = async (id: number) => {
+    try {
+        const response = await axios.delete(`${API_URL}/${id}`, getAuthHeaders());
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updateReservation = async (id: number, reservationUpdate: any) => {
+    try {
+        const response = await axios.put(`${API_URL}/${id}`, reservationUpdate , getAuthHeaders());
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

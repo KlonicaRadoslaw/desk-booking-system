@@ -7,6 +7,12 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast } from 'react-toastify';
 
+interface Desk {
+    id: number;
+    name: string;
+    isAvailable: boolean;
+}
+
 const ReservationForm = () => {
     const { user } = useAuth();
     const [locations, setLocations] = useState<any[]>([]);
@@ -38,22 +44,37 @@ const ReservationForm = () => {
     };
 
     const fetchDesks = async (locationId: string) => {
+        if (!startDate || !endDate) return;
+    
         try {
             const allDesks = await getDesksByLocation(locationId);
-            if (startDate && endDate) {
-                const availableDesksPromises = allDesks.map(async (desk: any) => {
-                    const isAvailable = await getDeskAvailability(desk.id, startDate, endDate);
-                    return { ...desk, isAvailable };
-                });
-                const desksWithAvailability = await Promise.all(availableDesksPromises);
-                const filteredDesks = desksWithAvailability.filter(desk => desk.isAvailable);
-                setDesks(filteredDesks);
-            } else {
-                setDesks(allDesks);
-            }
+            console.log('All desks:', allDesks);
+    
+            const availableDesksPromises = allDesks.map(async (desk: Desk) => {
+                if (desk.isAvailable !== undefined) {
+                    return desk;
+                }
+    
+                let isAvailable;
+                try {
+                    isAvailable = await getDeskAvailability(desk.id.toString(), startDate, endDate);
+                } catch (err) {
+                    console.error(`Error checking availability for desk ${desk.id}:`, err);
+                    isAvailable = undefined;
+                }
+                return { ...desk, isAvailable };
+            });
+    
+            const desksWithAvailability = await Promise.all(availableDesksPromises);
+            console.log('Desks with availability:', desksWithAvailability);
+    
+            const filteredDesks = desksWithAvailability.filter(desk => desk.isAvailable);
+            console.log('Filtered desks:', filteredDesks);
+    
+            setDesks(filteredDesks);
         } catch (err) {
+            console.error('Error fetching desks:', err);
             toast.error('Error fetching desks');
-            console.error('Error fetching desks', err);
         }
     };
 

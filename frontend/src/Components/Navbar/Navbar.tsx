@@ -13,7 +13,8 @@ const Navbar = (props: Props) => {
 
   const reservationOptions = [
     { value: '/create-reservation', label: 'New Reservation' },
-    { value: '/reservations', label: 'Reservation List' }
+    { value: '/reservations', label: 'Reservation List' },
+    { value: '/user-reservations', label: 'My Reservations' }
 ];
 const deskOptions = [
     { value: '/desks', label: 'Desks' },
