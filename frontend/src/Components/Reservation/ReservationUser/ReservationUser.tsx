@@ -12,7 +12,7 @@ interface Reservation {
     userId: string;
     startDate: string;
     endDate: string;
-    deskNames: string; // Changed to string for easier display
+    deskNames: string;
 }
 
 interface Desk {

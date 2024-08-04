@@ -73,7 +73,7 @@ const UpdateDesk: React.FC = () => {
         try {
             await deleteDesk(id);
             toast.success('Desk deleted successfully');
-            fetchDesks(); // Refresh the desk list
+            fetchDesks();
         } catch (error: any) {
             toast.error('Desk is available or reserved');
             console.error(error);
