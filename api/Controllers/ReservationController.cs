@@ -21,6 +21,7 @@ namespace api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllReservations()
         {
             var reservations = await _reservationRepository.GetAllAsync();
@@ -28,6 +29,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> GetReservationById(int id)
         {
             var reservation = await _reservationRepository.GetByIdAsync(id);
@@ -38,6 +40,7 @@ namespace api.Controllers
         }
 
         [HttpGet("user/{userId}")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> GetReservationsByUserId(string userId)
         {
             var reservations = await _reservationRepository.GetByUserIdAsync(userId);
@@ -45,6 +48,7 @@ namespace api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> CreateReservation([FromBody] CreateReservationRequestDto createReservationDto)
         {
             foreach (var deskId in createReservationDto.DeskIds)
@@ -68,6 +72,7 @@ namespace api.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> UpdateReservation(int id, UpdateReservationRequestDto updateReservationDto)
         {
             var reservation = await _reservationRepository.GetByIdAsync(id);
@@ -82,6 +87,7 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> DeleteReservation(int id)
         {
             var reservation = await _reservationRepository.GetByIdAsync(id);
@@ -96,6 +102,7 @@ namespace api.Controllers
         }
 
         [HttpGet("availability")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> CheckDeskAvailability([FromQuery] int deskId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
         {
             var isAvailable = await _reservationRepository.IsDeskAvailableAsync(deskId, startDate, endDate);

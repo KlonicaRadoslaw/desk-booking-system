@@ -25,7 +25,7 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> GetAllDesks()
         {
             if (!ModelState.IsValid)
@@ -36,7 +36,7 @@ namespace api.Controllers
         }
 
         [HttpGet("/api/Desk/location/{locationId:int}")]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> GetDesksByLocationId([FromRoute] int locationId)
         {
             if (!ModelState.IsValid)
@@ -47,6 +47,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> GetDeskById([FromRoute] int id)
         {
             if (!ModelState.IsValid)
@@ -61,6 +62,7 @@ namespace api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddDesk(CreateDeskRequestDto deskDto)
         {
             if (!ModelState.IsValid)
@@ -79,6 +81,7 @@ namespace api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateDeskRequestDto updateDto)
         {
             var deskModel = await _deskRepository.UpdateAsync(id, updateDto);
@@ -96,6 +99,7 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteDesk(int id)
         {
             var desk = await _deskRepository.GetByIdAsync(id);
@@ -115,6 +119,7 @@ namespace api.Controllers
         }
 
         [HttpGet("available/{date}")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> GetAvailableDesks([FromRoute] DateTime date)
         {
             if (!ModelState.IsValid)

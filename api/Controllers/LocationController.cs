@@ -18,8 +18,8 @@ namespace api.Controllers
             _locationRepository = locationRepository;
         }
 
-        //[Authorize(Roles = "Admin")]
         [HttpGet]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> GetLocations()
         {
             if (!ModelState.IsValid)
@@ -31,6 +31,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> GetLocationById([FromRoute] int id)
         {
             if (!ModelState.IsValid)
@@ -45,6 +46,7 @@ namespace api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] CreateLocationRequestDto locationDto)
         {
             if (!ModelState.IsValid)
@@ -64,6 +66,7 @@ namespace api.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateLocationRequestDto updateDto)
         {
             if (!ModelState.IsValid)
@@ -78,6 +81,7 @@ namespace api.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             if (!ModelState.IsValid)
