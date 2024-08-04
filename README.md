@@ -7,6 +7,7 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Running Tests](#running-tests)
+- [Screenshots](#screenshots)
 
 ## Project Description
 
@@ -95,3 +96,17 @@ The Desk Booking System is a comprehensive solution designed to manage desk rese
 ```sh
 dotnet test
 ```
+
+## Screenshots
+
+### Home Page
+![Home Page](screenshots/home.png)
+
+### New Reservation
+![New Reservation](screenshots/newReservation.png)
+
+### Locations
+![Locations](screenshots/locations.png)
+
+### Available Desks
+![Available Desks](screenshots/availableDesks.png)
