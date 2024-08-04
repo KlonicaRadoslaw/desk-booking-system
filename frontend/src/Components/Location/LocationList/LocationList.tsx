@@ -4,6 +4,11 @@ import { getDesksByLocation } from '../../../Services/DeskService';
 import { deleteLocation } from '../../../Services/LocationService';
 import { toast } from 'react-toastify';
 import Spinner from '../../Spinner/Spinner';
+import { jwtDecode } from 'jwt-decode';
+
+interface DecodedToken {
+    role: string;
+  }
 
 const LocationList = () => {
     const [locations, setLocations] = useState<any[]>([]);
@@ -11,6 +16,18 @@ const LocationList = () => {
     const [desks, setDesks] = useState<{ [key: number]: any[] }>({});
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+
+    let role = "";
+    const token = localStorage.getItem("token");
+
+    if (token) {
+        try {
+            const decodedToken: DecodedToken = jwtDecode(token);
+            role = decodedToken.role;
+        } catch (error) {
+            console.error("Invalid token specified", error);
+        }
+    }
 
     useEffect(() => {
         const fetchLocations = async () => {
@@ -83,12 +100,14 @@ const LocationList = () => {
                             >
                                 {location.name}
                             </button>
-                            <button
+                            {role === 'Admin' && (
+                                <button
                                 onClick={() => handleDeleteLocation(location.id)}
                                 className="ml-4 py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
                             >
                                 Delete
                             </button>
+                            )}
                         </div>
                         {openLocationId === location.id && desks[location.id] && (
                             <ul className="mt-2 pl-4 space-y-2">
