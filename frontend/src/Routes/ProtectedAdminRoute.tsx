@@ -13,9 +13,19 @@ const ProtectedAdminRoute = ({ children }: Props) => {
   const location = useLocation();
   const { isLoggedIn } = useAuth();
 
-  const decodedToken: DecodedToken = jwtDecode(localStorage.getItem("token") || "");
+  let role = "";
+    const token = localStorage.getItem("token");
 
-  return isLoggedIn() && (decodedToken.role === 'Admin') ? (
+    if (token) {
+        try {
+            const decodedToken: DecodedToken = jwtDecode(token);
+            role = decodedToken.role;
+        } catch (error) {
+            console.error("Invalid token specified", error);
+        }
+    }
+
+  return isLoggedIn() && (role === 'Admin') ? (
     <>{children}</>
   ) : (
     <Navigate to="/" state={{ from: location }} replace />
