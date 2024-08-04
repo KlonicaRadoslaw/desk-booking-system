@@ -9,17 +9,17 @@ interface DecodedToken {
   role: string;
 }
 
-const ProtectedRoute = ({ children }: Props) => {
+const ProtectedAdminRoute = ({ children }: Props) => {
   const location = useLocation();
   const { isLoggedIn } = useAuth();
 
   const decodedToken: DecodedToken = jwtDecode(localStorage.getItem("token") || "");
 
-  return isLoggedIn() && (decodedToken.role === 'User' || decodedToken.role === 'Admin') ? (
+  return isLoggedIn() && (decodedToken.role === 'Admin') ? (
     <>{children}</>
   ) : (
-    <Navigate to="/login" state={{ from: location }} replace />
+    <Navigate to="/" state={{ from: location }} replace />
   );
 }
 
-export default ProtectedRoute
+export default ProtectedAdminRoute

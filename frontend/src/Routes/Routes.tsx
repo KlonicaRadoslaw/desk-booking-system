@@ -12,6 +12,7 @@ import CreateReservationPage from "../Pages/CreateReservationPage/CreateReservat
 import UpdateDeskPage from "../Pages/UpdateDeskPage/UpdateDeskPage";
 import ReservationListPage from "../Pages/ReservationListPage/ReservationListPage";
 import UpdateUsersReservationPage from "../Pages/UpdateUsersReservationPage/UpdateUsersReservationPage";
+import ProtectedAdminRoute from "./ProtectedAdminRoute";
 
 export const router = createBrowserRouter([
     {
@@ -22,13 +23,13 @@ export const router = createBrowserRouter([
             {path: "login", element: <LoginPage/>},
             {path: "register", element: <RegisterPage/>},
             {path: "create-reservation", element: <ProtectedRoute><CreateReservationPage/></ProtectedRoute>},
-            {path: "reservations", element: <ProtectedRoute><ReservationListPage/></ProtectedRoute>},
+            {path: "reservations", element: <ProtectedAdminRoute><ReservationListPage/></ProtectedAdminRoute>},
             {path: "user-reservations", element: <ProtectedRoute><UpdateUsersReservationPage/></ProtectedRoute>},
-            {path: "create-location", element: <ProtectedRoute><CreateLocationPage/> </ProtectedRoute>},
+            {path: "create-location", element: <ProtectedAdminRoute><CreateLocationPage/> </ProtectedAdminRoute>},
             {path: "locations", element: <ProtectedRoute><LocationListPage/></ProtectedRoute>},
-            {path: "create-desk", element: <ProtectedRoute><CreateDeskPage/></ProtectedRoute>},
+            {path: "create-desk", element: <ProtectedAdminRoute><CreateDeskPage/></ProtectedAdminRoute>},
             {path: "desks", element: <ProtectedRoute><DeskListPage/></ProtectedRoute>},
-            {path: "update-desk", element: <ProtectedRoute><UpdateDeskPage/></ProtectedRoute>},
+            {path: "update-desk", element: <ProtectedAdminRoute><UpdateDeskPage/></ProtectedAdminRoute>},
         ]
     }
 ])
