@@ -100,13 +100,13 @@ dotnet test
 ## Screenshots
 
 ### Home Page
-![Home Page](screenshots/home.png)
+![Home Page](screenshots/home.PNG)
 
 ### New Reservation
-![New Reservation](screenshots/newReservation.png)
+![New Reservation](screenshots/newReservation.PNG)
 
 ### Locations
-![Locations](screenshots/locations.png)
+![Locations](screenshots/locations.PNG)
 
 ### Available Desks
-![Available Desks](screenshots/availableDesks.png)
+![Available Desks](screenshots/availableDesks.PNG)
