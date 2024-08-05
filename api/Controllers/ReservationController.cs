@@ -79,6 +79,15 @@ namespace api.Controllers
             if (reservation == null)
                 return NotFound();
 
+            foreach (var deskId in updateReservationDto.DeskIds)
+            {
+                var isOverlapping = await _reservationRepository.IsDeskReservedAsync(deskId, updateReservationDto.StartDate, updateReservationDto.EndDate);
+                if (isOverlapping)
+                {
+                    return Conflict($"Desk {deskId} is already reserved during the chosen dates.");
+                }
+            }
+
             var result = await _reservationRepository.UpdateAsync(id, updateReservationDto);
             if (!result)
                 return NotFound();
